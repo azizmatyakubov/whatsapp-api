@@ -1,5 +1,6 @@
 import express from "express";
 import cors from 'cors'
+import usersRouter from "./api/users/index.js";
 
 const app = express();
 
@@ -11,6 +12,8 @@ app.get('/api/test', (req, res) => {
         message: 'Test seccessful'
     })
 })
+
+app.use('/users', usersRouter)
 
 
   

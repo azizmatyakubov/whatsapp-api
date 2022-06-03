@@ -3,7 +3,7 @@ import { JWTAuthMiddleware } from "../../auth/JWTMiddleware.js";
 import createError from "http-errors";
 import { generateAccessToken } from "../../auth/tool.js";
 import UserModel from "./model.js";
-import q2m from "query-to-mongo";
+
 
 const usersRouter = express.Router();
 

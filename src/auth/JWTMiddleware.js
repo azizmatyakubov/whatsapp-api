@@ -1,4 +1,4 @@
-import createError from "https-errors";
+import createError from "http-errors";
 import { verifyAccessToken } from "./tool.js";
 
 export const JWTAuthMiddleware = async (req, res, next) => {

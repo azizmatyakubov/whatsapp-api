@@ -31,9 +31,8 @@
     "jest": "^28.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.5",
-
+    "query-to-mongo": "^0.10.2",
     "socket.io": "^4.5.1",
-
     "supertest": "^6.2.3"
   },
   "devDependencies": {
