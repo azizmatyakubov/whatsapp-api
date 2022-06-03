@@ -1,5 +1,6 @@
-import app from "./app";
+import app from "./app.js";
 import mongoose from "mongoose";
+import listendpoints from 'express-list-endpoints'
 
 const PORT = process.env.PORT || 3001;
 
