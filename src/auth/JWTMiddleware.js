@@ -2,13 +2,11 @@ import createError from "http-errors";
 import { verifyAccessToken } from "./tool.js";
 
 export const JWTAuthMiddleware = async (req, res, next) => {
-  console.log(req);
-  if (!req.cookies.accessToken) {
+  if (!req.headers.authorization) {
     next(createError(401, "Send Access Token"));
   } else {
     try {
-      const token = req.cookies.accessToken;
-      console.log(token)
+      const token = req.headers.authorization.split(" ")[1];
       const payload = await verifyAccessToken(token);
 
       req.user = {

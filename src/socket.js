@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import { createServer } from "http";
 import app from "./app.js";
+import Chat from "./api/chats/model.js";
 
 export const httpServer = createServer(app);
 const io = new Server(httpServer);
@@ -8,19 +9,31 @@ const io = new Server(httpServer);
 
 
 io.on('connection', (socket) => {
-    console.log('New client connected')
+
     console.log(socket.id)
 
-    socket.emit('message', {
-        message: 'Welcome to the chat app'
+    socket.on('join', (room) => {
+        socket.join(room)
+        socket.to(room).emit('message', `User has joined with id ${socket.id}`);
     })
 
-    socket.on('sendMessage', (data) => {
-        console.log(data)
-        io.emit('message', data)
+    socket.on('sendMessage', async ({ message, room }) => {
+        try {
+            await Chat.findOneAndUpdate({name: room}, {$push: {messages: message}})
+            socket.to(room).emit('message', message);
+        } catch (error) {
+            
+        }
     })
+
+
+
+
+
 
     socket.on('disconnect', () => {
-        console.log('Client disconnected')
+        io.emit('message', 'User has left')
     })
 })
+
+
