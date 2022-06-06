@@ -44,7 +44,8 @@ usersRouter.post("/session", async (req, res, next) => {
         secure: false,
       });
 
-      res.status(201).send();
+      res.status(200).send({ accessToken });
+
     } else {
       next(createError(401, "Unauthorized"));
     }
@@ -55,9 +56,11 @@ usersRouter.post("/session", async (req, res, next) => {
 
 usersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
-    const user = await UserModel.find({ username });
+    const { _id } = req.user;
+    const user = await UserModel.findById(_id);
+    
     if (user) {
-      res.send(user);
+      res.status(200).send(user);
     } else {
       next("User not found!");
     }
@@ -85,7 +88,8 @@ usersRouter.get("/:id", JWTAuthMiddleware, async (req, res, next) => {
     if (user) {
       res.status(200).send(user);
     } else {
-      next(404, "User not found");
+      res.status(404).send("User not found");
+
     }
   } catch (error) {
     next(error);
@@ -111,7 +115,7 @@ usersRouter.put("/me", JWTAuthMiddleware, async (req, res, next) => {
 
 usersRouter.delete("/session", JWTAuthMiddleware, async (req, res, next) => {
   try {
-    res.clearCookie("accessToken", { path: "/" }).send();
+    res.clearCookie("accessToken");
   } catch (error) {
     next(error);
   }

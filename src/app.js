@@ -1,6 +1,8 @@
 import express from "express";
 import cors from 'cors'
 import usersRouter from "./api/users/index.js";
+import chatsRouter from "./api/chats/index.js";
+
 
 const app = express();
 
@@ -14,7 +16,7 @@ app.get('/api/test', (req, res) => {
 })
 
 app.use('/users', usersRouter)
-
+app.use('/chats', chatsRouter)
 
   
 
