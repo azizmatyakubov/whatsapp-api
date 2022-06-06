@@ -4,6 +4,7 @@ import listendpoints from 'express-list-endpoints'
 import { httpServer } from "./socket.js";
 
 const PORT = process.env.PORT || 3001;
+console.log(process.env.MONGO_URL, 'process.env.MONGO_URL')
 mongoose.connect(process.env.MONGO_URL)
 
 mongoose.connection.on("connected", () => {
