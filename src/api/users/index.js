@@ -13,11 +13,10 @@ usersRouter.get('/googleLogin', passport.authenticate('google', {
     scope: ['profile', 'email']
     }))
 
-usersRouter.get('/googleRedirect', passport.authenticate('google'), (req, res, next) => {
-    const accessToken = generateAccessToken(req.user);
-    res.redirect('/')
+usersRouter.get('/googleRedirect', passport.authenticate('google', {session: false}), (req, res, next) => {
+    const accessToken = req.user.accessToken;
     try {
-      
+      res.redirect(`${process.env.FE_URL}/?accessToken=${accessToken}`);
     } catch (error) {
       
     }

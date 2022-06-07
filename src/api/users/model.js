@@ -7,8 +7,9 @@ const UserSchema = new Schema(
   {
     username: { type: String, required: true },
     email: { type: String, required: true },
-    password: { type: String, required: true  },
+    password: { type: String, required: false  },
     avatar: { type: String, default: "https://picsum.photos/200/300" },
+    googleId: { type: String, default: null },
   },
   { timestamp: true }
 );
