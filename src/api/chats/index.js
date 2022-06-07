@@ -29,7 +29,7 @@ ChatsRouter.get("/", JWTAuthMiddleware, async (req, res) => {
     try {
         const chats = await Chats.find().populate('members');
         if(chats) {
-            res.send(chats);
+            res.status(200).send(chats);
         } else {
             res.send("There are no chats");
         }
