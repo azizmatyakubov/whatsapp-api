@@ -13,7 +13,7 @@ io.on('connection', (socket) => {
     console.log(socket.rooms);
 
 
-    socket.on('connect', (payload) => {
+    socket.on('join', (payload) => {
         const packet = JSON.parse(payload);
         const { userId, chatName } = packet;
         socket.join(chatName);
