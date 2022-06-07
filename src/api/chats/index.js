@@ -1,5 +1,6 @@
 import express from "express";
 import Chats from "./model.js";
+import { JWTAuthMiddleware } from "../../auth/JWTMiddleware.js";
 
 const ChatsRouter = express.Router();
 
@@ -24,7 +25,7 @@ ChatsRouter.post("/", async (req, res) => {
 
 
 
-ChatsRouter.get("/", async (req, res) => {
+ChatsRouter.get("/", JWTAuthMiddleware, async (req, res) => {
     try {
         const chats = await Chats.find().populate('members');
         if(chats) {

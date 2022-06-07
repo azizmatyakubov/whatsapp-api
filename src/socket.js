@@ -13,18 +13,19 @@ io.on('connection', (socket) => {
     console.log(socket.rooms);
 
 
-    socket.on('join', (payload) => {
+    socket.on('connect', (payload) => {
         const packet = JSON.parse(payload);
         const { userId, chatName } = packet;
         socket.join(chatName);
-        socket.emit('message', {
-            user: 'admin',
-            text: `${userId} has joined.`
-        });
+        socket.userId = userId;
+        socket.chatName = chatName;
+        console.log(`${userId} connected to ${chatName}`);
+
         socket.broadcast.to(chatName).emit('message', {
             user: 'admin',
             text: `${userId} has joined.`
         });
+
         Chat.findOne({ name: chatName }).then(chat => {
             if (chat) {
                 chat.members.push(userId);
@@ -39,7 +40,27 @@ io.on('connection', (socket) => {
 
 
 
-    socket.on('sendMessage', async (payload) => {
+    socket.on('incoming-msg', async (payload) => {
+        try {
+            const packet = JSON.parse(payload);
+            const { userId, chatName, text } = packet;
+            const message = {
+                userId,
+                text,
+                createdAt: new Date().getTime()
+            };
+            socket.broadcast.to(chatName).emit('message', message);
+            const chat = await Chat.findOne({ name: chatName });
+            chat.messages.push(message);
+            await chat.save();
+        } catch (error) {
+            console.log(error)
+        }
+    })
+
+
+    //socket outgoing-msg
+    socket.on('outgoing-msg', async (payload) => {
         try {
             const packet = JSON.parse(payload);
             const { userId, chatName, text } = packet;
@@ -58,9 +79,27 @@ io.on('connection', (socket) => {
         }
     })
 
-    socket.on('disconnect', () => {
-        io.emit('message', 'User has left')
+    // disconnect
+    socket.on('disconnect', (payload) => {
+        const packet = JSON.parse(payload);
+        const { userId, chatName } = packet;
+        socket.emit('message', {
+            user: 'admin',
+            text: `${userId} has left.`
+        });
+        socket.broadcast.to(chatName).emit('message', {
+            user: 'admin',
+            text: `${userId} has left.`
+        });
+        Chat.findOne({ name: chatName }).then(chat => {
+            if (chat) {
+                chat.members = chat.members.filter(member => member !== userId);
+                chat.save();
+            }
+        })
     })
 })
+
+
 
 
