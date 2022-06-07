@@ -27,7 +27,7 @@ ChatsRouter.post("/", async (req, res) => {
 
 ChatsRouter.get("/", JWTAuthMiddleware, async (req, res) => {
     try {
-        const chats = await Chats.find().populate('members');
+        const chats = await Chats.find({members: req.user}).populate('members');
         if(chats) {
             res.status(200).send(chats);
         } else {
