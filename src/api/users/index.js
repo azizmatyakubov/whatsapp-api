@@ -1,11 +1,30 @@
 import express from "express";
-import { JWTAuthMiddleware } from "../../auth/JWTMiddleware.js";
 import createError from "http-errors";
+import passport from 'passport'
+import { JWTAuthMiddleware } from "../../auth/JWTMiddleware.js";
 import { generateAccessToken } from "../../auth/tool.js";
 import UserModel from "./model.js";
 
 
+
 const usersRouter = express.Router();
+
+usersRouter.get('/googleLogin', passport.authenticate('google', {
+    scope: ['profile', 'email']
+    }))
+
+usersRouter.get('/googleRedirect', passport.authenticate('google'), (req, res, next) => {
+    const accessToken = generateAccessToken(req.user);
+    res.redirect('/')
+    try {
+      
+    } catch (error) {
+      
+    }
+})
+
+
+
 
 usersRouter.post("/account", async (req, res, next) => {
   try {
@@ -21,7 +40,7 @@ usersRouter.post("/account", async (req, res, next) => {
       sameSite: "lax",
       secure: false,
     });
-    res.status(201).send({ _id });
+    res.status(201).send(accessToken);
   } catch (error) {
     next(error);
   }
@@ -54,6 +73,8 @@ usersRouter.post("/session", async (req, res, next) => {
   }
 });
 
+
+
 usersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const { _id } = req.user;
@@ -68,6 +89,8 @@ usersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
     next(error);
   }
 });
+
+
 
 usersRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
   try {

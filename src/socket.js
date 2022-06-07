@@ -15,16 +15,16 @@ io.on('connection', (socket) => {
 
     socket.on('join', (payload) => {
         const packet = JSON.parse(payload);
-        const { userId, chatName } = packet;
+        const { userId, chatName } = packet;         
         socket.join(chatName);
         socket.userId = userId;
         socket.chatName = chatName;
         console.log(`${userId} connected to ${chatName}`);
 
-        socket.broadcast.to(chatName).emit('message', {
+        socket.broadcast.to(chatName).emit('message', {                
             user: 'admin',
             text: `${userId} has joined.`
-        });
+        });                     
 
         Chat.findOne({ name: chatName }).then(chat => {
             if (chat) {
