@@ -14,9 +14,9 @@ usersRouter.get('/googleLogin', passport.authenticate('google', {
 }))
 
 usersRouter.get('/googleRedirect', passport.authenticate('google', {session: false}), (req, res, next) => {
-const     accessToken = req.user?.accessToken;
+    // const accessToken = req.user?.accessToken;
     try {
-      res.redirect(`${process.env.FE_URL}/Chat/?accessToken=${accessToken}`);
+     // res.redirect(`${process.env.FE_URL}/Chat/?accessToken=${accessToken}`);
     } catch (error) {
       
     }

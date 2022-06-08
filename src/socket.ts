@@ -12,9 +12,7 @@ const io = new Server(httpServer);
 
 io.on('connection', async (socket) => {
     let id;
-    // go grab this users chats 
-    // we are going to join them all
-    // and then we are going to emit the messages
+
     const decoded = jwt.verify(socket.handshake.headers.token as string, process.env.JWT_SECRET!) as JwtPayload
     const user = await User.findById(decoded._id )
 
