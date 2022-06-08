@@ -39,7 +39,7 @@ usersRouter.post("/account", async (req, res, next) => {
       sameSite: "lax",
       secure: false,
     });
-    res.status(201).send(accessToken);
+    res.status(201).send({accessToken});
   } catch (error) {
     next(error);
   }
