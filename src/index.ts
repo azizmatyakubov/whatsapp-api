@@ -1,9 +1,14 @@
-import app from "./app.js";
+import app from "./app";
 import mongoose from "mongoose";
 import listendpoints from 'express-list-endpoints'
-import { httpServer } from "./socket.js";
+import { httpServer } from "./socket";
 
 const PORT = process.env.PORT || 3001;
+
+if(!process.env.MONGO_URL){
+    throw new Error('MONGO_URL must be defined');
+}
+
 mongoose.connect(process.env.MONGO_URL)
 
 mongoose.connection.on("connected", () => {

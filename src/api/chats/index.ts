@@ -1,18 +1,23 @@
 import express from "express";
-import Chats from "./model.js";
+import Chats from "./model";
+import { JWTAuthMiddleware } from "../../auth/JWTMiddleware";
 
 const ChatsRouter = express.Router();
 
-ChatsRouter.post("/", async (req, res) => {
+ChatsRouter.post("/", JWTAuthMiddleware, async (req, res, next) => {
+    const reqUser = req.user 
+    const recipient = req.body.recipient
+
+    const members = [reqUser, recipient]
     try {
       const chat = await Chats.findOne({name: req.body.chatName});
         if(chat){
             res.status(400).send({message: "Chat already exists"});
         } else{
-            const { userId, chatName } = req.body;
-            const newChat = new Chats({ name: chatName });
-            newChat.members.push(userId);
+            const newChat = new Chats()
+            newChat.members = members;
             await newChat.save();
+
             res.status(201).send(newChat);
         }
     } catch (error) {
@@ -24,11 +29,11 @@ ChatsRouter.post("/", async (req, res) => {
 
 
 
-ChatsRouter.get("/", async (req, res) => {
+ChatsRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
     try {
-        const chats = await Chats.find().populate('members');
+        const chats = await Chats.find({members: req.user}).populate('members');
         if(chats) {
-            res.send(chats);
+            res.status(200).send(chats);
         } else {
             res.send("There are no chats");
         }
@@ -40,12 +45,11 @@ ChatsRouter.get("/", async (req, res) => {
 })
 
 
-ChatsRouter.get("/:name", async (req, res) => {
-
+ChatsRouter.get("/:chatId", JWTAuthMiddleware, async (req, res, next) => {
     try {
-        const chats = await Chats.findOne({ name: req.params.name }).populate('members');
-
+        const chats = await Chats.findOne({ _id: req.params.chatId }).populate('members');
         if (!chats) {
+
           return res.status(404).send(`Chat with name ${req.params.name} not found`);
         } else {
             res.send(chats);
