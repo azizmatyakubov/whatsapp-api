@@ -1,7 +1,9 @@
 import createError from "http-errors";
-import { verifyAccessToken } from "./tool.js";
+import { verifyAccessToken } from "./tool";
+import  {RequestHandler, Request, Response, NextFunction } from "express";
+import {User} from '../types/Types'
 
-export const JWTAuthMiddleware = async (req, res, next) => {
+export const JWTAuthMiddleware= async (req:Request, res:Response, next:NextFunction) => {
   if (!req.headers.authorization) {
     next(createError(401, "Send Access Token"));
   } else {
@@ -13,12 +15,9 @@ export const JWTAuthMiddleware = async (req, res, next) => {
         next(createError(401, "Invalid Access Token"));
       } else {
 
-      req.user = {
-        _id: payload._id,
-        username: payload.username,
-      }};
+      req.user = payload._id;
       next();
-    } catch (error) {
+    }} catch (error) {
       next(createError(401, "Token Not Valid"));
     }
   }

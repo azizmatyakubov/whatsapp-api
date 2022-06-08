@@ -1,10 +1,10 @@
 import express from "express";
 import cors from 'cors'
-import usersRouter from "./api/users/index.js";
-import chatsRouter from "./api/chats/index.js";
-import { badRequestErrorHandler, unauthorizedErrorHandler, notFoundErrorHandler, genericErrorHandler } from "./errorHandlers.js";
+import usersRouter from "./api/users/index";
+import chatsRouter from "./api/chats/index";
+import { badRequestErrorHandler, unauthorizedErrorHandler, notFoundErrorHandler, genericErrorHandler } from "./errorHandlers";
 import passport from "passport";
-import googleStrategy from "./auth/googleOAuth.js";
+import googleStrategy from "./auth/googleOAuth";
 
 
 const app = express();
@@ -29,7 +29,7 @@ app.use('/chats', chatsRouter)
 
 
 // Error handlers
-app.use(badRequestErrorHandler)
+app.use(badRequestErrorHandler )
 app.use(unauthorizedErrorHandler)
 app.use(notFoundErrorHandler)
 app.use(genericErrorHandler)

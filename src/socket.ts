@@ -1,10 +1,10 @@
 import { Server } from "socket.io";
 import { createServer } from "http";
 import jwt from "jsonwebtoken";
-import app from "./app.js";
-import Chat from "./api/chats/model.js";
-import User from "./api/users/model.js";
-
+import app from "./app";
+import Chat from "./api/chats/model";
+import User from "./api/users/model";
+import {JwtPayload} from './types/Types'
 export const httpServer = createServer(app);
 const io = new Server(httpServer);
 
@@ -12,14 +12,13 @@ const io = new Server(httpServer);
 
 io.on('connection', async (socket) => {
     let id;
-
     // go grab this users chats 
     // we are going to join them all
     // and then we are going to emit the messages
-    const decoded = jwt.verify(socket.handshake.headers.token, process.env.JWT_SECRET)
-    const user = await User.findById(decoded._id)
+    const decoded = jwt.verify(socket.handshake.headers.token as string, process.env.JWT_SECRET!) as JwtPayload
+    const user = await User.findById(decoded._id )
 
-    const chats = await Chat.find({members: user._id.toString()})
+    const chats = await Chat.find({members: user?._id.toString()})
 
     socket.join(chats.map(chat => chat._id.toString()))
     chats.map(chat => id = chat._id.toString())
@@ -35,7 +34,7 @@ io.on('connection', async (socket) => {
             const message = {
                 chatId: payload.chatId.toString(),
                 userId: payload.userId,
-                userName: user.username,
+                userName: user?.username,
                 text: payload.message,
                 createdAt: Date.now()
             }
@@ -46,8 +45,6 @@ io.on('connection', async (socket) => {
         } catch (error) {
             console.log(error)
         }
-
-
     })
 
     // disconnect
@@ -55,7 +52,3 @@ io.on('connection', async (socket) => {
         console.log('disconnect')
         })
 })
-
-
-
-

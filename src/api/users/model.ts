@@ -1,25 +1,28 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import { User } from "../../types/Types";
 
 const { Schema, model } = mongoose;
 
-const UserSchema = new Schema(
-  {
+
+const UserSchema =
+  new Schema <User, UserModel >
+  ({
     username: { type: String, required: true },
-    email: { type: String, required: true },
+    phoneNumber: { type: String, required: true },
     password: { type: String, required: false  },
     avatar: { type: String, default: "https://picsum.photos/200/300" },
     googleId: { type: String, default: null },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 
-UserSchema.pre("save", async function (next) {
-  const newUser = this;
+UserSchema.pre("save", async function (next: () => void) {
+  const newUser = this as User;
   const plainPW = newUser.password;
   if (newUser.isModified("password")) {
-    const hash = await bcrypt.hash(plainPW, 11);
-    newUser.password = hash;
+    const hash = await bcrypt.hash(plainPW as string|Buffer, 11);
+    newUser.password = hash
   }
   next();
 });
@@ -34,8 +37,8 @@ UserSchema.methods.toJSON = function () {
   return userObj;
 };
 
-UserSchema.statics.checkCredentials = async function (email, plainPassword) {
-  const user = await this.findOne({ email });
+UserSchema.statics.checkCredentials = async function (phoneNumber: any, plainPassword: string | Buffer) {
+  const user = await this.findOne({ phoneNumber });
 
   if (user) {
     const isMatch = await bcrypt.compare(plainPassword, user.password);
@@ -50,4 +53,8 @@ UserSchema.statics.checkCredentials = async function (email, plainPassword) {
   }
 };
 
-export default model("User", UserSchema);
+interface UserModel extends mongoose.Model<User> {
+  checkCredentials: (phoneNumber: string, password: string) => Promise<User | null>;
+}
+
+export default model<User, UserModel>("User", UserSchema);

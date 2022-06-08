@@ -1,6 +1,6 @@
 import express from "express";
-import Chats from "./model.js";
-import { JWTAuthMiddleware } from "../../auth/JWTMiddleware.js";
+import Chats from "./model";
+import { JWTAuthMiddleware } from "../../auth/JWTMiddleware";
 
 const ChatsRouter = express.Router();
 
@@ -29,7 +29,7 @@ ChatsRouter.post("/", JWTAuthMiddleware, async (req, res, next) => {
 
 
 
-ChatsRouter.get("/", JWTAuthMiddleware, async (req, res) => {
+ChatsRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
     try {
         const chats = await Chats.find({members: req.user}).populate('members');
         if(chats) {
@@ -45,7 +45,7 @@ ChatsRouter.get("/", JWTAuthMiddleware, async (req, res) => {
 })
 
 
-ChatsRouter.get("/:chatId", JWTAuthMiddleware, async (req, res) => {
+ChatsRouter.get("/:chatId", JWTAuthMiddleware, async (req, res, next) => {
     try {
         const chats = await Chats.findOne({ _id: req.params.chatId }).populate('members');
         if (!chats) {

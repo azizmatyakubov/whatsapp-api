@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const index_1 = __importDefault(require("./api/users/index"));
+// import chatsRouter from "./api/chats/index.js";
+const app = (0, express_1.default)();
+app.use(express_1.default.json());
+app.use((0, cors_1.default)());
+app.get('/api/test', (req, res) => {
+    res.send({
+        message: 'Test seccessful'
+    });
+});
+app.use('/users', index_1.default);
+// app.use('/chats', chatsRouter)
+exports.default = app;

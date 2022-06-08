@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import User from '../users/model.js'
+import User from "../users/model";
 // const User = UserSchema
 
 const MessageSchema = new mongoose.Schema({
@@ -19,9 +19,8 @@ const MessageSchema = new mongoose.Schema({
 });
 
 const ChatSchema = new mongoose.Schema({
-  members: 
-      [ {type: mongoose.Schema.Types.ObjectId, ref : User} ]
-  ,
+ 
+  members: [{ type: mongoose.Schema.Types.ObjectId, ref: User }],
   messages: {
     type: [MessageSchema],
     default: [],
