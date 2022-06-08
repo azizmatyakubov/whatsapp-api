@@ -1,82 +1,53 @@
 import { Server } from "socket.io";
 import { createServer } from "http";
+import jwt from "jsonwebtoken";
 import app from "./app.js";
 import Chat from "./api/chats/model.js";
+import User from "./api/users/model.js";
 
 export const httpServer = createServer(app);
 const io = new Server(httpServer);
 
 
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
+    let id;
 
-    console.log(socket.rooms);
+    // go grab this users chats 
+    // we are going to join them all
+    // and then we are going to emit the messages
+    const decoded = jwt.verify(socket.handshake.headers.token, process.env.JWT_SECRET)
+    const user = await User.findById(decoded._id)
 
+    const chats = await Chat.find({members: user._id.toString()})
 
-    socket.on('join', (payload) => {
-        const packet = JSON.parse(payload);
-        const { userId, chatName } = packet;         
-        socket.join(chatName);
-        socket.userId = userId;
-        socket.chatName = chatName;
-        console.log(`${userId} connected to ${chatName}`);
-
-        socket.broadcast.to(chatName).emit('message', {                
-            user: 'admin',
-            text: `${userId} has joined.`
-        });                     
-
-        Chat.findOne({ name: chatName }).then(chat => {
-            if (chat) {
-                chat.members.push(userId);
-                chat.save();
-            } else {
-                const newChat = new Chat({ name: chatName });
-                newChat.members.push(userId);
-                newChat.save();
-            }
-        })
-    })
-
-
-
-    socket.on('incoming-msg', async (payload) => {
-        try {
-            const packet = JSON.parse(payload);
-            const { userId, chatName, text } = packet;
-            const message = {
-                userId,
-                text,
-                createdAt: new Date().getTime()
-            };
-            socket.broadcast.to(chatName).emit('message', message);
-            const chat = await Chat.findOne({ name: chatName });
-            chat.messages.push(message);
-            await chat.save();
-        } catch (error) {
-            console.log(error)
-        }
-    })
+    socket.join(chats.map(chat => chat._id.toString()))
+    chats.map(chat => id = chat._id.toString())
 
 
     //socket outgoing-msg
     socket.on('outgoing-msg', async (payload) => {
+        console.log(payload)
+        // send to specific user
         try {
-            const packet = JSON.parse(payload);
-            const { userId, chatName, text } = packet;
+            const chat = await Chat.findById(payload.chatId)
+            const user = await User.findById(payload.userId)
             const message = {
-                userId,
-                text,
-                createdAt: new Date().getTime()
-            };
-            socket.emit('message', message);
-            socket.broadcast.to(chatName).emit('message', message);
-            const chat = await Chat.findOne({ name: chatName });
-            chat.messages.push(message);
-            await chat.save();
+                chatId: payload.chatId.toString(),
+                userId: payload.userId,
+                userName: user.username,
+                text: payload.message,
+                createdAt: Date.now()
+            }
+            chat.messages.push(message)
+            await chat.save()
+            console.log('hello')
+            socket.to(payload.chatId).emit('incoming-msg', message)
         } catch (error) {
             console.log(error)
         }
+
+
     })
 
     // disconnect
