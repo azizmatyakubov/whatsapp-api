@@ -52,23 +52,8 @@ io.on('connection', async (socket) => {
 
     // disconnect
     socket.on('disconnect', (payload) => {
-        const packet = JSON.parse(payload);
-        const { userId, chatName } = packet;
-        socket.emit('message', {
-            user: 'admin',
-            text: `${userId} has left.`
-        });
-        socket.broadcast.to(chatName).emit('message', {
-            user: 'admin',
-            text: `${userId} has left.`
-        });
-        Chat.findOne({ name: chatName }).then(chat => {
-            if (chat) {
-                chat.members = chat.members.filter(member => member !== userId);
-                chat.save();
-            }
+        console.log('disconnect')
         })
-    })
 })
 
 
