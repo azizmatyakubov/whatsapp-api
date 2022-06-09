@@ -7,12 +7,14 @@ export interface User {
 	phoneNumber: string
 	avatar?: string
 	password: string
-	[key: string]: string|Number|Boolean|Date|undefined;
+	accessToken:string
 }
 
 export  interface Chat {
 	members: User[]
 	messages: Message[]
+	accessToken:string
+
 }
 
 export interface Message {
@@ -21,10 +23,13 @@ export interface Message {
 		text?: string
 		media?: string
 	}
+	accessToken:string
 	timestamp: number
+
 }
 
 export interface JwtPayload extends jwt.JwtPayload {
 	_id: string
 	username: string
+
 }
