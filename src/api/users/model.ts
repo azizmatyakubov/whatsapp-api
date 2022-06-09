@@ -10,11 +10,13 @@ const UserSchema =
   ({
     username: { type: String, required: true },
     phoneNumber: { type: String, required: true },
-    password: { type: String },
+    password: { type: String, required: false  },
     avatar: { type: String, default: "https://picsum.photos/200/300" },
     accessToken:{type:String}
-    
-  });
+    googleId: { type: String, default: null },
+  },
+  { timestamps: true }
+);
 
 UserSchema.pre("save", async function (next: () => void) {
   const newUser = this as User;

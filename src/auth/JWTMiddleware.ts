@@ -11,10 +11,13 @@ export const JWTAuthMiddleware= async (req:Request, res:Response, next:NextFunct
       const token = req.headers.authorization.split(" ")[1];
       const payload = await verifyAccessToken(token);
 
-      req.user = payload._id;
+      if (!payload) {
+        next(createError(401, "Invalid Access Token"));
+      } else {
 
+      req.user = payload._id;
       next();
-    } catch (error) {
+    }} catch (error) {
       next(createError(401, "Token Not Valid"));
     }
   }

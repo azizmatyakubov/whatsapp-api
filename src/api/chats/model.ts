@@ -3,26 +3,23 @@ import User from "../users/model";
 // const User = UserSchema
 
 const MessageSchema = new mongoose.Schema({
-  content: {
+  text: {
     type: String,
     required: true,
   },
-  sender: {
+  userId: {
     type: String,
     required: true,
   },
   // id: string
-  timestamp: {
+  createdAt: {
     type: Number,
     required: true,
   }, // the number of elapsed ms after 1/1/1970
 });
 
 const ChatSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
+ 
   members: [{ type: mongoose.Schema.Types.ObjectId, ref: User }],
   messages: {
     type: [MessageSchema],

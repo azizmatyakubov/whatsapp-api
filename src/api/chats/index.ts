@@ -10,9 +10,9 @@ ChatsRouter.post("/", JWTAuthMiddleware, async (req, res, next) => {
 
     const members = [reqUser, recipient]
     try {
-      const chat = await Chats.findOne({name: req.body.chatName});
+      const chat = await Chats.findOne({ members: { $all: members } });
         if(chat){
-            res.status(400).send({message: "Chat already exists"});
+            res.status(400).send(chat);
         } else{
             const newChat = new Chats()
             newChat.members = members;
