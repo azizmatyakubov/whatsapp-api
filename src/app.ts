@@ -23,6 +23,8 @@ app.get('/api/test', (req, res) => {
     })
 })
 
+
+// Endpoints
 app.use('/users', usersRouter)
 app.use('/chats', chatsRouter)
 

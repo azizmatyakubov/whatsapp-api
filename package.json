@@ -23,6 +23,7 @@
   "homepage": "https://github.com/azizmatyakubov/whatsapp-api#readme",
   "dependencies": {
     "@types/jsonwebtoken": "^8.5.8",
+    "@types/validator": "^13.7.3",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",

@@ -1,10 +1,13 @@
 import express, { Request, Response, NextFunction } from "express";
-import { JWTAuthMiddleware } from "../../auth/JWTMiddleware";
 import createError from "http-errors";
+import validator from 'validator';
+import passport from 'passport'
+
+import { JWTAuthMiddleware } from "../../auth/JWTMiddleware";
 import { generateAccessToken } from "../../auth/tool";
+
 import UserSchema from "./model";
 import { User } from "../../types/Types";
-import passport from 'passport'
 
 
 const usersRouter = express.Router();
@@ -14,7 +17,7 @@ usersRouter.get('/googleLogin', passport.authenticate('google', {
 }))
 
 usersRouter.get('/googleRedirect', passport.authenticate('google', {session: false}), (req, res, next) => {
-    // const accessToken = req.user?.accessToken;
+     // const accessToken = req.user?.accessToken;
     try {
      // res.redirect(`${process.env.FE_URL}/Chat/?accessToken=${accessToken}`);
     } catch (error) {
@@ -25,8 +28,21 @@ usersRouter.get('/googleRedirect', passport.authenticate('google', {session: fal
 
 
 
-usersRouter.post("/account", async (req, res, next) => {
+usersRouter.post("/account",  async (req, res, next) => {
   try {
+
+    // use validator
+    // const { username, phoneNumber, password } = req.body;
+    // if (!username || !phoneNumber || !password) {
+    //   return next(createError(400, "Missing required fields"));
+    // }
+    // // check username
+    // if( !validator.isAlphanumeric(username) || !validator.isMobilePhone(phoneNumber, 'any') || !validator.isLength(password, { min: 6, max: 20 })) {
+    //   return next(createError(400, "Invalid username or phone number or password"));
+    // }
+   
+
+
     const newUser = new UserSchema(req.body);
     const { _id, username } = await newUser.save();
     const accessToken= await generateAccessToken({

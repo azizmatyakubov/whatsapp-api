@@ -1,6 +1,9 @@
 import express from "express";
+import validator from 'validator';
+
 import Chats from "./model";
 import { JWTAuthMiddleware } from "../../auth/JWTMiddleware";
+
 
 const ChatsRouter = express.Router();
 
