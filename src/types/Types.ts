@@ -8,6 +8,7 @@ export interface User {
 	avatar?: string
 	password: string
 	accessToken:string
+	googleId?: string
 }
 
 export  interface Chat {
