@@ -1,13 +1,24 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import { JWTAuthMiddleware } from "../../auth/JWTMiddleware";
 import createError from "http-errors";
 import { generateAccessToken } from "../../auth/tool";
 import UserSchema from "./model";
-import { User } from "../../types/Types";
-
-
+import passport from 'passport'
 
 const usersRouter = express.Router();
+
+usersRouter.get('/googleLogin', passport.authenticate('google', {
+    scope: ['profile', 'email']
+    }))
+
+usersRouter.get('/googleRedirect', passport.authenticate('google', {session: false}), (req, res, next) => {
+    const accessToken   = req.user?.accessToken ;
+    try {
+      res.redirect(`${process.env.FE_URL}/Chat/?accessToken=${accessToken}`);
+    } catch (error) {
+      
+    }
+})
 
 usersRouter.post("/account", async (req, res, next) => {
   try {
@@ -43,6 +54,8 @@ usersRouter.post("/session", async (req, res, next) => {
   }
 });
 
+
+
 usersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const _id = req.user;
@@ -57,6 +70,8 @@ usersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
     next(error);
   }
 });
+
+
 
 usersRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
   try {

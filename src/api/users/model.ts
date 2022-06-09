@@ -12,6 +12,7 @@ const UserSchema =
     phoneNumber: { type: String, required: true },
     password: { type: String },
     avatar: { type: String, default: "https://picsum.photos/200/300" },
+    accessToken:{type:String}
     
   });
 
