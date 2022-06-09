@@ -12,6 +12,7 @@ const UserSchema =
     phoneNumber: { type: String, required: true },
     password: { type: String, required: false  },
     avatar: { type: String, default: "https://picsum.photos/200/300" },
+    accessToken:{type:String}
     googleId: { type: String, default: null },
   },
   { timestamps: true }

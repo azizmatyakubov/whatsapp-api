@@ -4,11 +4,11 @@ import { JwtPayload } from "../types/Types";
 
 
 export const generateAccessToken = (payload: JwtPayload) =>{
-return new Promise((resolve, reject) =>
+return new Promise<string>((resolve, reject) =>
     jwt.sign(payload, process.env.JWT_SECRET as Secret, {expiresIn: "1 week"},
       (err, token) => {
         if (err) reject(err);
-        else{return resolve(token)};
+        else{return resolve(token as string)};
       }
     )
   );}

@@ -1,16 +1,26 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import createError from "http-errors";
-import validator from 'validator';
 import passport from 'passport'
 
 import { JWTAuthMiddleware } from "../../auth/JWTMiddleware";
 import { generateAccessToken } from "../../auth/tool";
 
 import UserSchema from "./model";
-import { User } from "../../types/Types";
-
 
 const usersRouter = express.Router();
+
+usersRouter.get('/googleLogin', passport.authenticate('google', {
+    scope: ['profile', 'email']
+    }))
+
+usersRouter.get('/googleRedirect', passport.authenticate('google', {session: false}), (req, res, next) => {
+    const accessToken   = req.user?.accessToken ;
+    try {
+      res.redirect(`${process.env.FE_URL}/Chat/?accessToken=${accessToken}`);
+    } catch (error) {
+      
+    }
+})
 
 usersRouter.get('/googleLogin', passport.authenticate('google', {
   scope: ['profile', 'email']

@@ -6,9 +6,8 @@ import Chat from "./api/chats/model";
 import User from "./api/users/model";
 import {JwtPayload} from './types/Types'
 export const httpServer = createServer(app);
+
 const io = new Server(httpServer);
-
-
 
 io.on('connection', async (socket) => {
     let id;
