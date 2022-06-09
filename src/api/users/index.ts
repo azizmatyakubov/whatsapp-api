@@ -96,7 +96,10 @@ usersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
 
 usersRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
   try {
-    const user = await UserSchema.findById(req.user!);
+    const auth  = req.headers.authorization;
+    const accessToken = auth?.split(" ")[1];
+    const user = await UserSchema.findById(accessToken);
+    
     if (user) {
       res.send(user);
     } else {
