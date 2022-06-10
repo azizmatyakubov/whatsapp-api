@@ -12,7 +12,7 @@ const io = new Server(httpServer);
 io.on('connection', async (socket) => {
     let id;
 
-    const decoded = jwt.verify(socket.handshake.headers.token as string, process.env.JWT_SECRET!) as JwtPayload
+    const decoded = jwt.verify(socket.handshake.auth.token as string, process.env.JWT_SECRET!) as JwtPayload
     const user = await User.findById(decoded._id )
 
     const chats = await Chat.find({members: user?._id.toString()})
