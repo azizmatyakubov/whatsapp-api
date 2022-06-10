@@ -18,13 +18,14 @@ var corsOptions:CorsOptions = {
     if (!origin || whitelist.indexOf(origin) !== -1) {
       callback(null, true)
     } else {
+      console.log(origin)
       callback(new Error('Not allowed by CORS'))
     }
   }
 }
 
 app.use(express.json())
-app.use(cors(corsOptions ))
+app.use(cors(corsOptions))
 app.use(passport.initialize())
 
 
