@@ -1,8 +1,9 @@
  import {Profile, Strategy as GoogleStrategy, VerifyCallback} from "passport-google-oauth20";
 import User from "../api/users/model";
 import { generateAccessToken } from "./tool";
+import dotenv from 'dotenv';
 
-
+dotenv.config()
 
 const googleStrategy = new GoogleStrategy(
   {
