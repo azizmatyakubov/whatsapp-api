@@ -12,7 +12,7 @@ const app = express();
 passport.use('google', googleStrategy)
 
 
-var whitelist = ['http://example1.com', 'http://example2.com']
+var whitelist = ['http://localhost:3000', 'http://example2.com']
 var corsOptions:CorsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin!) !== -1) {
